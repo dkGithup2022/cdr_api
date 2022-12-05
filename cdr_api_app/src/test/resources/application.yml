@@ -1,0 +1,47 @@
+
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 300
+
+logging:
+  file:
+    name: logs/api_test.log
+---
+# h2
+spring:
+  config:
+    activate:
+      on-profile: test-h2
+
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+
+---
+#컨테이너
+spring:
+  config:
+    activate:
+      on-profile: container
+
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:///testDb
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
