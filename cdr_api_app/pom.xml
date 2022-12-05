@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.dk0124.cdr</groupId>
+        <artifactId>cdr_api</artifactId>
+        <version>1.0-api</version>
+        <relativePath/>
+    </parent>
+    <packaging>jar</packaging>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cdr_api_app</artifactId>
+
+    <dependencies>
+
+        <!-- spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--data-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+
+        <!--module-->
+
+        <dependency>
+            <groupId>com.dk0124.cdr</groupId>
+            <artifactId>cdr_common_persistence_1.0</artifactId>
+            <version>1.0-api</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dk0124.cdr</groupId>
+            <artifactId>cdr_common_constant_1.0</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        <!--test-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
+
+
+</project>
