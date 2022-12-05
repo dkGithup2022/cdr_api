@@ -9,15 +9,9 @@
     <version>1.0-api</version>
     <packaging>pom</packaging>
 
-    <parent>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <groupId>org.springframework.boot</groupId>
-        <version>2.6.4</version>
-    </parent>
-
     <modules>
-        <module>cdr_common_persistence</module>
         <module>cdr_common_constant</module>
+        <module>cdr_common_persistence</module>
         <module>cdr_api_app</module>
     </modules>
 
