@@ -1,5 +1,6 @@
 package com.dk0124.cdr.cdrApi.controller;
 
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,7 +8,7 @@ import javax.websocket.server.PathParam;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/cdrapi")
+@RequestMapping(value = "/cdrapi", produces = MediaTypes.HAL_JSON_VALUE)
 public class ApiController {
 
     @RequestMapping("/{dataType}/{vendorCode}/{coinCode}")
@@ -17,7 +18,7 @@ public class ApiController {
             @PathVariable String coinCode,
             @RequestParam(required = false, name = "timestamp") Optional<String> timestampBeforeValidated,
             @RequestParam(required = false, name = "size") Optional<String> sizeBeforeValidated
-    ){
+    ) {
 
         return ResponseEntity.ok("ok");
     }
