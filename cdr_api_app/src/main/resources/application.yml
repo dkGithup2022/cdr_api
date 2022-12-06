@@ -13,3 +13,7 @@ spring:
   h2:
     console:
       path: /h2-console
+
+conditions:
+    enableEmptyApi: false
+

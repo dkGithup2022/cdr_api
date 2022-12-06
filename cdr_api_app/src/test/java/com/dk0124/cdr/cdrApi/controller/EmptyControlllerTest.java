@@ -1,6 +1,7 @@
 package com.dk0124.cdr.cdrApi.controller;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,10 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+@Disabled("This test is for spring rest docs and plugins version check, not for production or normal test")
 class EmptyControlllerTest {
-
     private MockMvc mockMvc;
-
 
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation){
