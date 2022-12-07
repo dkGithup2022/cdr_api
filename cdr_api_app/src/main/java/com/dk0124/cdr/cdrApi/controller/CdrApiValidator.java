@@ -39,8 +39,6 @@ public class CdrApiValidator {
 
     }
 
-
-
     private boolean isInValidDataType(String dataType){
         return DataType.fromString(dataType) == null;
     }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class ApiExceptionControllerAdvice {
     @ExceptionHandler(InvalidApiParameterException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleNoSuchElementFoundException(InvalidApiParameterException exception) {
