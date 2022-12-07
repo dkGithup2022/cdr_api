@@ -1,6 +1,8 @@
 package com.dk0124.cdr.cdrApi.service.bithumb;
 
 import com.dk0124.cdr.constants.coinCode.bithumbCoinCode.BithumbCoinCode;
+import com.dk0124.cdr.persistence.dto.bithumb.candle.BithumbCandleDto;
+import com.dk0124.cdr.persistence.dto.bithumb.orderbook.BithumbOrderbookDto;
 import com.dk0124.cdr.persistence.entity.bithumb.candle.BithumbCandle;
 import com.dk0124.cdr.persistence.entity.bithumb.orderbook.BithumbOrderbook;
 import com.dk0124.cdr.persistence.entity.bithumb.tick.BithumbTick;
@@ -11,6 +13,7 @@ import com.dk0124.cdr.persistence.repositoryPicker.bithumb.BithumbCandleReposito
 import com.dk0124.cdr.persistence.repositoryPicker.bithumb.BithumbOrderbookRepositoryPicker;
 import com.dk0124.cdr.persistence.repositoryPicker.bithumb.BithumbTickRepositoryPicker;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,35 +27,18 @@ public class BithumbService {
     private final BithumbTickRepositoryPicker bithumbTickRepositoryPicker;
     private final BithumbCandleRepositoryPicker bithumbCandleRepositoryPicker;
     private final BithumbOrderbookRepositoryPicker bithumbOrderbookRepositoryPicker;
+    private final ModelMapper modelMapper;
 
-    public Page<BithumbCandle> getBithumbCandlesBefore(BithumbCoinCode code, Long timestamp, int size) {
-        BithumbCandleCommonJpaInterface repo = bithumbCandleRepositoryPicker.getRepositoryFromCode(code);
-        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("timestamp").descending());
-        return repo.findByTimestampLessThanEqual(timestamp, pageRequest);
-    }
-
-    public Page<BithumbCandle> getBithumbCandlesBefore(BithumbCoinCode code, Long timestamp, int size, int page) {
+    public Page<BithumbCandleDto> getBithumbCandlesBefore(BithumbCoinCode code, Long timestamp, int size, int page) {
         BithumbCandleCommonJpaInterface repo = bithumbCandleRepositoryPicker.getRepositoryFromCode(code);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("timestamp").descending());
-        return repo.findByTimestampLessThanEqual(timestamp, pageRequest);
+        return repo.findByTimestampLessThanEqual(timestamp, pageRequest).map(d->modelMapper.map(d,BithumbCandleDto.class));
     }
 
-    public Page<BithumbOrderbook> getBithumbOrderbooksBefore(BithumbCoinCode code, Long timestamp, int size) {
-        BithumbOrderbookCommonJpaInterface repo = bithumbOrderbookRepositoryPicker.getRepositoryFromCode(code);
-        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("timestamp").descending());
-        return repo.findByDatetimeLessThanEqual(timestamp, pageRequest);
-    }
-
-    public Page<BithumbOrderbook> getBithumbOrderbooksBefore(BithumbCoinCode code, Long timestamp, int size, int page) {
+    public Page<BithumbOrderbookDto> getBithumbOrderbooksBefore(BithumbCoinCode code, Long timestamp, int size, int page) {
         BithumbOrderbookCommonJpaInterface repo = bithumbOrderbookRepositoryPicker.getRepositoryFromCode(code);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("timestamp").descending());
-        return repo.findByDatetimeLessThanEqual(timestamp, pageRequest);
-    }
-
-    public Page<BithumbTick> getBithumbticksBefore(BithumbCoinCode code, Long timestamp, int size) {
-        BithumbTickCommonJpaInterface repo = bithumbTickRepositoryPicker.getRepositoryFromCode(code);
-        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("timestamp").descending());
-        return repo.findByTimestampLessThanEqual(timestamp, pageRequest);
+        return repo.findByDatetimeLessThanEqual(timestamp, pageRequest).map(d->modelMapper.map(d,BithumbOrderbookDto.class));
     }
 
     public Page<BithumbTick> getBithumbticksBefore(BithumbCoinCode code, Long timestamp, int size, int page) {
