@@ -16,7 +16,7 @@ class CdrApiValidatorTest {
 
     CdrApiValidator apiValidator = new CdrApiValidator();
 
-    @DisplayName("TEST :CdrApiValidator.checkPathParams(dataType,vendorCode,coinCode) 올바른 입력에 대한 테스트")
+    @DisplayName("UNIT TEST :CdrApiValidator.checkPathParams(dataType,vendorCode,coinCode) 올바른 입력에 대한 테스트")
     @ParameterizedTest(name = "index ={index}, dataType={0}, vendorCode={1}, coinCode={2}   ")
     @MethodSource("provide_valid_api_path_parameters")
     void validate_path_param_success(String dataType,
@@ -31,9 +31,9 @@ class CdrApiValidatorTest {
     }
 
 
-    @DisplayName("TEST :CdrApiValidator.checkPathParams(dataType,vendorCode,coinCode) 나쁜 입력에 대해 InvalidApiParameterException ")
+    @DisplayName("UNIT TEST :CdrApiValidator.checkPathParams(dataType,vendorCode,coinCode) 나쁜 입력에 대해 InvalidApiParameterException ")
     @ParameterizedTest(name = "index ={index}, dataType={0}, vendorCode={1}, coinCode={2} ")
-    @MethodSource("provide_bad_api_path_parameters")
+    @MethodSource("provide_invalid_api_path_parameters")
     void validate_path_param_fail(String dataType,
                                   String vendorCode,
                                   String coinCode
@@ -44,11 +44,11 @@ class CdrApiValidatorTest {
 
     }
 
-    private static Stream<Arguments> provide_bad_api_path_parameters() { // argument source method
+    private static Stream<Arguments> provide_invalid_api_path_parameters() { // argument source method
         return ParameterSupplier.getInvalidPathParams();
     }
 
-    @DisplayName("TEST :CdrApiValidator.checkRequestParams(timestamp, size, page) 좋은 입력에 대해 테스트 ")
+    @DisplayName("UNIT TEST :CdrApiValidator.checkRequestParams(timestamp, size, page) 좋은 입력에 대해 테스트 ")
     @ParameterizedTest(name = "index ={index}, dataType={0}, vendorCode={1}, coinCode={2} ")
     @MethodSource("provide_valid_api_request_parameters")
     void validate_request_param_success(Long timestamp, Integer size, Integer page
@@ -61,9 +61,9 @@ class CdrApiValidatorTest {
     }
 
 
-    @DisplayName("TEST :CdrApiValidator.checkRequestParams(timestamp, size, page) 나쁜 입력에 대해 InvalidApiParameterException ")
+    @DisplayName("UNIT TEST :CdrApiValidator.checkRequestParams(timestamp, size, page) 나쁜 입력에 대해 InvalidApiParameterException ")
     @ParameterizedTest(name = "index ={index}, dataType={0}, vendorCode={1}, coinCode={2} ")
-    @MethodSource("provide_bad_api_request_parameters")
+    @MethodSource("provide_invalid_api_request_parameters")
     void validate_request_param_fail(Long timestamp, Integer size, Integer page
     ) {
         assertThrows(InvalidApiParameterException.class, () -> {
@@ -73,7 +73,7 @@ class CdrApiValidatorTest {
 
     }
 
-    private static Stream<Arguments> provide_bad_api_request_parameters() { // argument source method
+    private static Stream<Arguments> provide_invalid_api_request_parameters() { // argument source method
         return ParameterSupplier.getInValidQueryParams();
     }
 
