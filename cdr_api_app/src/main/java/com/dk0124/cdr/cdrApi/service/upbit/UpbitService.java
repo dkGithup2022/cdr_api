@@ -1,5 +1,6 @@
 package com.dk0124.cdr.cdrApi.service.upbit;
 
+import com.dk0124.cdr.cdrApi.resource.UpbitTickResource;
 import com.dk0124.cdr.constants.coinCode.UpbitCoinCode.UpbitCoinCode;
 import com.dk0124.cdr.persistence.dto.upbit.candle.UpbitCandleDto;
 import com.dk0124.cdr.persistence.dto.upbit.orderbook.UpbitOrderbookDto;
@@ -28,10 +29,15 @@ public class UpbitService {
 
     private final ModelMapper modelMapper;
 
-    public Page<UpbitTickDto> getUpbitTicksBefore(UpbitCoinCode code, Long timestamp, int size, int page) {
+    public Page<UpbitTickResource> getUpbitTicksBefore(UpbitCoinCode code, Long timestamp, int size, int page) {
         UpbitTickRepository repo = upbitTickRepositoryPicker.getRepositoryFromCode(code);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("timestamp").descending());
-        return repo.findByTimestampLessThanEqual(timestamp, pageRequest).map(d -> modelMapper.map(d, UpbitTickDto.class));
+        return repo.findByTimestampLessThanEqual(timestamp, pageRequest)
+                .map(d -> {
+                    UpbitTickDto dto = modelMapper.map(d,UpbitTickDto.class);
+                    return new UpbitTickResource(dto);
+                }
+                );
     }
 
     public Page<UpbitOrderbookDto> getUpbitOrderbooksBefore(UpbitCoinCode code, Long timestamp, int size, int page) {

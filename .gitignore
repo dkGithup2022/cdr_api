@@ -1,6 +1,7 @@
 
 */target/
-*/log/
+*/log
+*/logs
 */.idea/
 
 /.idea/

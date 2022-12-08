@@ -4,6 +4,10 @@ import com.dk0124.cdr.constants.coinCode.UpbitCoinCode.UpbitCoinCode;
 import com.dk0124.cdr.constants.coinCode.bithumbCoinCode.BithumbCoinCode;
 import com.dk0124.cdr.constants.vendor.VendorType;
 
+import com.dk0124.cdr.persistence.entity.upbit.tick.UpbitTick;
+import com.dk0124.cdr.persistence.entity.upbit.tick.UpbitTickFactory;
+import com.dk0124.cdr.persistence.repository.upbit.upbitTickRepository.UpbitTickRepository;
+import com.dk0124.cdr.persistence.repositoryPicker.upbit.UpbitTickRepositoryPicker;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -42,10 +47,13 @@ class ApiControllerTest {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    UpbitTickRepositoryPicker upbitTickRepositoryPicker;
+
     String BASE_URL = "/cdrapi";
 
     String UPBIT_TICKS_REQUEST_URI =
-            "/cdrapi/ticks/" + VendorType.UPBIT + "/" + UpbitCoinCode.KRW_ADA;
+            "/cdrapi/ticks/" + VendorType.UPBIT.getName() + "/" + UpbitCoinCode.KRW_ADA.toString();
 
     String UPBIT_ORDERBOOKS_REQUEST_URI =
             "/cdrapi/orderbooks/" + VendorType.UPBIT + "/" + UpbitCoinCode.KRW_ADA;
@@ -120,13 +128,16 @@ class ApiControllerTest {
     @DisplayName("API TEST : _links 에 next,prev 링크 존재 여부 확인")
     //TODO : repeated test 형식으로 변경 가능
     public void check_header_is_valid_for_paging() throws Exception {
-        String url = UPBIT_TICKS_REQUEST_URI + "?timestamp=30&size=20";
+        save1000Ticks();
+        String url = UPBIT_TICKS_REQUEST_URI + "?size=2&page=3";
         mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(jsonPath("_links").exists())
                 .andExpect(jsonPath("_links.prev").exists())
                 .andExpect(jsonPath("_links.next").exists());
     }
+
+
 
     @Test
     @DisplayName("API TEST : upbit ticks 에 dto 칼럼들 존재하는지 확인")
@@ -287,7 +298,21 @@ class ApiControllerTest {
         mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
 
+    private void save1000Ticks() {
+        for (Long i = 1670252400000L; i < 1670252400000L + 1000; i++) {
+            UpbitTick upbitTick = UpbitTick.builder()
+                    .sequentialId(Long.valueOf(i))
+                    .code(UpbitCoinCode.KRW_ADA.toString())
+                    .timestamp(Long.valueOf(i))
+                    .build();
+
+            UpbitTickRepository repo =
+                    upbitTickRepositoryPicker.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
+
+            repo.save(UpbitTickFactory.of(upbitTick));
+        }
     }
 
 
