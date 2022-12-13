@@ -12,7 +12,6 @@ public class ParameterSupplier {
                 Arguments.of(System.currentTimeMillis() + 100, 2000 + 1, 100),
                 Arguments.of(System.currentTimeMillis() + 100, 200, -1)
         );
-
     }
 
     public static Stream<Arguments> getValidQueryParams() { // argument source method
@@ -25,7 +24,7 @@ public class ParameterSupplier {
         );
     }
 
-    public static Stream<Arguments> getInvalidPathParams(){
+    public static Stream<Arguments> getInvalidPathParams() {
         return Stream.of(
                 Arguments.of("", "upbit", "KRW-BTC"),
                 Arguments.of("orderbooks", "", "KRW-BTC"),
@@ -36,7 +35,7 @@ public class ParameterSupplier {
         );
     }
 
-    public static Stream<Arguments> getValidPathParams(){
+    public static Stream<Arguments> getValidPathParams() {
         return Stream.of(
                 Arguments.of("ticks", "upbit", "KRW-BTC"),
                 Arguments.of("orderbooks", "upbit", "KRW-BTC"),

@@ -39,6 +39,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -52,14 +53,21 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
@@ -195,9 +203,9 @@ class ApiControllerTest {
         String url = UPBIT_TICKS_REQUEST_URI;
         mockMvc.perform(get(url))
                 .andDo(print())
-                .andExpect(jsonPath("_embedded.upbitTickResourceList[0].sequentialId").exists())
+                // .andExpect(jsonPath("_embedded.upbitTickResourceList[0].sequentialId").exists())
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].code").exists())
-                .andExpect(jsonPath("_embedded.upbitTickResourceList[0].type").hasJsonPath())
+                // .andExpect(jsonPath("_embedded.upbitTickResourceList[0].type").hasJsonPath())
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].tradePrice").hasJsonPath())
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].tradeVolume").hasJsonPath())
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].askBid").hasJsonPath())
@@ -206,8 +214,33 @@ class ApiControllerTest {
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].changePrice").hasJsonPath())
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].tradeDateUtc").hasJsonPath())
                 .andExpect(jsonPath("_embedded.upbitTickResourceList[0].tradeTimeUtc").hasJsonPath())
-                .andExpect(jsonPath("_embedded.upbitTickResourceList[0].tradeTimestamp").hasJsonPath())
-                .andExpect(jsonPath("_embedded.upbitTickResourceList[0].timestamp").hasJsonPath())
+                //   .andExpect(jsonPath("_embedded.upbitTickResourceList[0].timestamp").hasJsonPath())
+                .andDo(document("upbit-ticks"
+                        , responseHeaders(headerWithName(HttpHeaders.CONTENT_TYPE).description("response content type is application/hal"))
+                        , requestParameters(
+                                parameterWithName("timestamp").description("default : current timestamp, constraint: timestamp should be more than 1670252400000L"),
+                                parameterWithName("size").description("maximum size of request, size is bigger than 0 and less than 2000"),
+                                parameterWithName("page").description("page of request"))
+                        , links(
+                                linkWithRel("self").description("link self"),
+                                linkWithRel("first").description("link of first page of this request"),
+                                linkWithRel("prev").optional().description("link of previos page of this request, this link is ignored if there's no previous page of this request"),
+                                linkWithRel("next").optional().description("link of next page of this request, this link is ignored if there's no next page of this request"),
+                                linkWithRel("last").description("link of last page of this request"),
+                                linkWithRel("profile").description("profile document link")
+                        ), relaxedResponseFields(
+                                fieldWithPath("_embedded.upbitTickResourceList[0].code").description("STRING: coin code of this data"),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].tradePrice").description("DOUBLE: current price of this coin"),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].tradeVolume").description("DOUBLE: recent trade volume "),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].prevClosingPrice").description("DOUBLE: last price of previos market "),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].change").description("String :  EVEN : 보합, RISE : 상승, FALL : 하락 "),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].changePrice").description("DOUBLE:  absolute value of change  "),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].tradeDateUtc").description("DATE: recent trade time : yyyyMMdd "),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].tradeTimeUtc").description("DATE: recent trade time : HHmmss "),
+                                fieldWithPath("_embedded.upbitTickResourceList[0].timestamp").description("LONG: timestamp long vlaue  ")
+                        )
+
+                ));
         ;
     }
 
@@ -361,12 +394,17 @@ class ApiControllerTest {
             UpbitTick upbitTick = UpbitTick.builder()
                     .askBid("ask")
                     .change("change")
-                    .prev_closing_price(10.0)
-                    .tradeDateUtc(new Date())
+                    .type("sell")
+                    .tradePrice(10.0)
                     .tradeVolume(100.0)
+                    .prevClosingPrice(10.0)
+                    .changePrice(10.0)
+                    .tradeDateUtc(new Date())
                     .sequentialId(Long.valueOf(i))
                     .code(UpbitCoinCode.KRW_ADA.toString())
                     .timestamp(Long.valueOf(i))
+                    .tradeTimeUtc(new Date())
+                    .streamType("soc_stream")
                     .build();
             UpbitTickRepository repo =
                     upbitTickRepositoryPicker.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
