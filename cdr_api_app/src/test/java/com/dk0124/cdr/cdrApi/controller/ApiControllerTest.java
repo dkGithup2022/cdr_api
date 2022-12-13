@@ -5,37 +5,36 @@ import com.dk0124.cdr.constants.coinCode.bithumbCoinCode.BithumbCoinCode;
 import com.dk0124.cdr.constants.vendor.VendorType;
 
 import com.dk0124.cdr.persistence.entity.bithumb.candle.BithumbCandle;
-import com.dk0124.cdr.persistence.entity.bithumb.candle.BithumbCandleFactory;
+import com.dk0124.cdr.persistence.entity.bithumb.candle.BithumbCandleUtils;
 import com.dk0124.cdr.persistence.entity.bithumb.orderbook.BithumbOrderbook;
-import com.dk0124.cdr.persistence.entity.bithumb.orderbook.BithumbOrderbookFactory;
+import com.dk0124.cdr.persistence.entity.bithumb.orderbook.BithumbOrderbookUtils;
 import com.dk0124.cdr.persistence.entity.bithumb.orderbook.BithumbOrderbookUnit;
 import com.dk0124.cdr.persistence.entity.bithumb.tick.BithumbTick;
-import com.dk0124.cdr.persistence.entity.bithumb.tick.BithumbTickFactory;
+import com.dk0124.cdr.persistence.entity.bithumb.tick.BithumbTickUtils;
 import com.dk0124.cdr.persistence.entity.upbit.candle.UpbitCandle;
-import com.dk0124.cdr.persistence.entity.upbit.candle.UpbitCandleFactory;
+import com.dk0124.cdr.persistence.entity.upbit.candle.UpbitCandleUtils;
 import com.dk0124.cdr.persistence.entity.upbit.orderbook.OrderBookUnit;
-import com.dk0124.cdr.persistence.entity.upbit.orderbook.UpbitOrderBookFactory;
+import com.dk0124.cdr.persistence.entity.upbit.orderbook.UpbitOrderbookUtils;
 import com.dk0124.cdr.persistence.entity.upbit.orderbook.UpbitOrderbook;
 import com.dk0124.cdr.persistence.entity.upbit.tick.UpbitTick;
-import com.dk0124.cdr.persistence.entity.upbit.tick.UpbitTickFactory;
-import com.dk0124.cdr.persistence.repository.bithumb.bithumbCandleRepository.BithumbCandleCommonJpaInterface;
-import com.dk0124.cdr.persistence.repository.bithumb.bithumbOrderbookRepository.BithumbOrderbookCommonJpaInterface;
-import com.dk0124.cdr.persistence.repository.bithumb.bithumbTickRepository.BithumbTickCommonJpaInterface;
-import com.dk0124.cdr.persistence.repository.upbit.upbitCandleRepository.UpbitCandleCommonJpaInterface;
-import com.dk0124.cdr.persistence.repository.upbit.upbitOrderBookRepository.UpbitOrderbookCommonRepository;
+import com.dk0124.cdr.persistence.entity.upbit.tick.UpbitTickUtils;
+import com.dk0124.cdr.persistence.repository.bithumb.bithumbCandleRepository.BithumbCandleRepository;
+import com.dk0124.cdr.persistence.repository.bithumb.bithumbOrderbookRepository.BithumbOrderbookRepository;
+import com.dk0124.cdr.persistence.repository.bithumb.bithumbTickRepository.BithumbTickRepository;
+import com.dk0124.cdr.persistence.repository.upbit.upbitCandleRepository.UpbitCandleRepository;
+import com.dk0124.cdr.persistence.repository.upbit.upbitOrderBookRepository.UpbitOrderbookRepository;
 import com.dk0124.cdr.persistence.repository.upbit.upbitTickRepository.UpbitTickRepository;
-import com.dk0124.cdr.persistence.repositoryPicker.bithumb.BithumbCandleRepositoryPicker;
-import com.dk0124.cdr.persistence.repositoryPicker.bithumb.BithumbOrderbookRepositoryPicker;
-import com.dk0124.cdr.persistence.repositoryPicker.bithumb.BithumbTickRepositoryPicker;
-import com.dk0124.cdr.persistence.repositoryPicker.upbit.UpbitCandleRepositoryPicker;
-import com.dk0124.cdr.persistence.repositoryPicker.upbit.UpbitOrderbookRepositoryPicker;
-import com.dk0124.cdr.persistence.repositoryPicker.upbit.UpbitTickRepositoryPicker;
+import com.dk0124.cdr.persistence.repositoryUtils.bithumb.BithumbCandleRepositoryUtils;
+import com.dk0124.cdr.persistence.repositoryUtils.bithumb.BithumbOrderbookRepositoryUtils;
+import com.dk0124.cdr.persistence.repositoryUtils.bithumb.BithumbTickRepositoryUtils;
+import com.dk0124.cdr.persistence.repositoryUtils.upbit.UpbitCandleRepositoryUtils;
+import com.dk0124.cdr.persistence.repositoryUtils.upbit.UpbitOrderbookRepositoryUtils;
+import com.dk0124.cdr.persistence.repositoryUtils.upbit.UpbitTickRepositoryUtils;
 import org.junit.jupiter.api.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,7 +52,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,18 +81,18 @@ class ApiControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    UpbitTickRepositoryPicker upbitTickRepositoryPicker;
+    UpbitTickRepositoryUtils upbitTickRepositoryUtils;
     @Autowired
-    UpbitOrderbookRepositoryPicker upbitOrderbookRepositoryPicker;
+    UpbitOrderbookRepositoryUtils upbitOrderbookRepositoryUtils;
     @Autowired
-    UpbitCandleRepositoryPicker upbitCandleRepositoryPicker;
+    UpbitCandleRepositoryUtils upbitCandleRepositoryUtils;
 
     @Autowired
-    BithumbTickRepositoryPicker bithumbTickRepositoryPicker;
+    BithumbTickRepositoryUtils bithumbTickRepositoryUtils;
     @Autowired
-    BithumbOrderbookRepositoryPicker bithumbOrderbookRepositoryPicker;
+    BithumbOrderbookRepositoryUtils bithumbOrderbookRepositoryUtils;
     @Autowired
-    BithumbCandleRepositoryPicker bithumbCandleRepositoryPicker;
+    BithumbCandleRepositoryUtils bithumbCandleRepositoryUtils;
 
 
     String BASE_URL = "/cdrapi";
@@ -135,7 +133,6 @@ class ApiControllerTest {
         save_1000_bithumb_tick();
         save_1000_bithumb_orderbook();
         save_1000_bithumb_candle();
-
     }
 
     @Test
@@ -218,9 +215,9 @@ class ApiControllerTest {
                 .andDo(document("upbit-ticks"
                         , responseHeaders(headerWithName(HttpHeaders.CONTENT_TYPE).description("response content type is application/hal"))
                         , requestParameters(
-                                parameterWithName("timestamp").description("default : current timestamp, constraint: timestamp should be more than 1670252400000L"),
-                                parameterWithName("size").description("maximum size of request, size is bigger than 0 and less than 2000"),
-                                parameterWithName("page").description("page of request"))
+                                parameterWithName("timestamp").optional().description("default : current timestamp, constraint: timestamp should be more than 1670252400000L"),
+                                parameterWithName("size").optional().description("maximum size of request, size is bigger than 0 and less than 2000"),
+                                parameterWithName("page").optional().description("page of request"))
                         , links(
                                 linkWithRel("self").description("link self"),
                                 linkWithRel("first").description("link of first page of this request"),
@@ -407,8 +404,8 @@ class ApiControllerTest {
                     .streamType("soc_stream")
                     .build();
             UpbitTickRepository repo =
-                    upbitTickRepositoryPicker.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
-            repo.save(UpbitTickFactory.of(upbitTick));
+                    upbitTickRepositoryUtils.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
+            repo.save(UpbitTickUtils.of(upbitTick));
         }
     }
 
@@ -434,9 +431,9 @@ class ApiControllerTest {
                             )
                     )
                     .build();
-            UpbitOrderbookCommonRepository repo =
-                    upbitOrderbookRepositoryPicker.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
-            repo.save(UpbitOrderBookFactory.of(upbitOrderbook));
+            UpbitOrderbookRepository repo =
+                    upbitOrderbookRepositoryUtils.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
+            repo.save(UpbitOrderbookUtils.of(upbitOrderbook));
         }
 
 
@@ -458,8 +455,8 @@ class ApiControllerTest {
                     .tradePrice(10.0)
                     .build();
 
-            UpbitCandleCommonJpaInterface repo = upbitCandleRepositoryPicker.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
-            repo.save(UpbitCandleFactory.of(upbitCandle));
+            UpbitCandleRepository repo = upbitCandleRepositoryUtils.getRepositoryFromCode(UpbitCoinCode.KRW_ADA);
+            repo.save(UpbitCandleUtils.of(upbitCandle));
         }
     }
 
@@ -476,8 +473,8 @@ class ApiControllerTest {
                     .timestamp(i)
                     .build();
 
-            BithumbTickCommonJpaInterface repo = bithumbTickRepositoryPicker.getRepositoryFromCode(BithumbCoinCode.KRW_ADA);
-            repo.save(BithumbTickFactory.of(bithumbTick));
+            BithumbTickRepository repo = bithumbTickRepositoryUtils.getRepositoryFromCode(BithumbCoinCode.KRW_ADA);
+            repo.save(BithumbTickUtils.of(bithumbTick));
         }
     }
 
@@ -506,8 +503,8 @@ class ApiControllerTest {
                             )
                     )
                     .build();
-            BithumbOrderbookCommonJpaInterface repo = bithumbOrderbookRepositoryPicker.getRepositoryFromCode(BithumbCoinCode.KRW_ADA);
-            repo.save(BithumbOrderbookFactory.of(bithumbOrderbook));
+            BithumbOrderbookRepository repo = bithumbOrderbookRepositoryUtils.getRepositoryFromCode(BithumbCoinCode.KRW_ADA);
+            repo.save(BithumbOrderbookUtils.of(bithumbOrderbook));
         }
     }
 
@@ -523,8 +520,8 @@ class ApiControllerTest {
                     .lowPrice(10.0)
                     .tradeAmount(10.0)
                     .build();
-            BithumbCandleCommonJpaInterface repo = bithumbCandleRepositoryPicker.getRepositoryFromCode(BithumbCoinCode.KRW_ADA);
-            repo.save(BithumbCandleFactory.of(bithumbCandle));
+            BithumbCandleRepository repo = bithumbCandleRepositoryUtils.getRepositoryFromCode(BithumbCoinCode.KRW_ADA);
+            repo.save(BithumbCandleUtils.of(bithumbCandle));
         }
     }
 
