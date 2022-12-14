@@ -1,5 +1,9 @@
 
 spring:
+  config:
+    activate:
+      on-profile: test
+
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -16,4 +20,28 @@ spring:
 
 conditions:
     enableEmptyApi: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dbOnIptime
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.0.13:5432/v1
+    username: postgres1
+    password: postgres1
+    hikari:
+      maximum-pool-size: 30
+      leakDetectionThreshold: 200000
+
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: validate
+
+conditions:
+  enableEmptyApi: false
 
