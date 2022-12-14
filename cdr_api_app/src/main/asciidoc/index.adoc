@@ -1,5 +1,5 @@
-= REST API Guide
-백기선;
+= API Guide
+dankim;
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -9,32 +9,10 @@
 :operation-curl-request-title: Example request
 :operation-http-response-title: Example response
 
-[[overview]]
+
+[overview]]
 = 개요
-
-[[overview-http-verbs]]
-== HTTP 동사
-
-본 REST API에서 사용하는 HTTP 동사(verbs)는 가능한한 표준 HTTP와 REST 규약을 따릅니다.
-
-|===
-| 동사 | 용례
-
-| `GET`
-| 리소스를 가져올 때 사용
-
-| `POST`
-| 새 리소스를 만들 때 사용
-
-| `PUT`
-| 기존 리소스를 수정할 때 사용
-
-| `PATCH`
-| 기존 리소스의 일부를 수정할 때 사용
-
-| `DELETE`
-| 기존 리소스를 삭제할 떄 사용
-|===
+본 api는 리소스 읽기 GET 요청만을 지원합니다.
 
 [[overview-http-status-codes]]
 == HTTP 상태 코드
@@ -47,14 +25,9 @@
 | `200 OK`
 | 요청을 성공적으로 처리함
 
-| `201 Created`
-| 새 리소스를 성공적으로 생성함. 응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
-
-| `204 No Content`
-| 기존 리소스를 성공적으로 수정함.
-
 | `400 Bad Request`
 | 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+path param, query param  validation 에 위반할 경우, InvalidApiParameterException을 반환함.
 
 | `404 Not Found`
 | 요청한 리소스가 없음.
@@ -66,20 +39,43 @@
 
 본 REST API는 하이퍼미디어와 사용하며 응답에 담겨있는 리소스는 다른 리소스에 대한 링크를 가지고 있다.
 응답은 http://stateless.co/hal_specification.html[Hypertext Application from resource to resource. Language (HAL)] 형식을 따른다.
-링크는 `_links`라는 키로 제공한다. 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.
+링크는 `_links`라는 키로 제공한다. 해당 api 에선 pageable read 에 대한 next, prev, first, last page link 를 제공한다.
 
 [[resources]]
 = 리소스
 
-[[resources-index]]
-== 인덱스
+[[resources-type]]
+=== 정보 타입
 
-인덱스는 서비스 진입점을 제공한다.
+|===
+|  {dataType}  | ticks, orderbooks, candles
+|===
 
+[[resources-type]]
+=== vendor code
+|===
+|  {vendorType}  | upbit, bithumb
+|===
 
-[[resources-index-access]]
-=== 인덱스 조회
+[[resources-type]]
+=== coin code
+
+|===
+| 벤더 | {coinCode}
+
+| `upbit`
+| [BTC_KRW, XRP_KRW, ETH_KRW, SOL_KRW, ADA_KRW, DOT_KRW, BCH_KRW, BAT_KRW, AVAX_KRW, ETC_KRW, AXS_KRW, PLA_KRW, SAND_KRW, SRM_KRW, DOGE_KRW, MANA_KRW, BTG_KRW, ATOM_KRW, MATIC_KRW, ENJ_KRW, CHZ_KRW]
+
+| `bithumb`
+|[KRW-BTC, KRW-XRP, KRW-ETH, KRW-STX, KRW-SOL, KRW-ADA, KRW-DOT, KRW-BCH, KRW-BAT, KRW-AVAX, KRW-ETC, KRW-AXS, KRW-PLA, KRW-SAND, KRW-SRM, KRW-DOGE, KRW-MANA, KRW-FLOW, KRW-BTG, KRW-ATOM, KRW-MATIC, KRW-ENJ, KRW-CHZ]
+|===
+
+[[resources-access]]
+= 조회
 
 `GET` 요청을 사용하여 인덱스에 접근할 수 있다.
 
-operation::index[snippets='response-body,http-response,links']
+[[upbit-ticks-spec]]
+=== upbit ticks 조회 요청
+
+operation::upbit-ticks[snippets='curl-request,http-response,response-headers,response-body,response-fields,links']
